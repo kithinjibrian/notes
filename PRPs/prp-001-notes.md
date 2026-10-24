@@ -47,20 +47,28 @@ Contract 5 has no scrolling box: Rapidkoi scrolls the whole page. So the list an
 - The view in `view.rs`: `list_pane`, `note_pane`, `empty_page`; the page a `row` of the two panes.
 
 ## TESTS
-- [ ] `Opened` asks for the schema, then the list; the schema's SQL is exactly the table above
-- [ ] `Rows` for `list` fills the list, groups and times as read; an empty list shows "No notes yet"
-- [ ] Typing in search asks for the list with the text as a parameter, never in the SQL
-- [ ] Picking a note links `note` and asks for it by ID; a link's `note` asks for it on `Opened`
-- [ ] A link to a note that's gone opens no note
-- [ ] Typing in the title or text asks for a write with a higher `rev` each time, and `WHERE id = ? AND rev < ?`
-- [ ] New inserts, then opens the note from `last_rowid`, the search cleared
-- [ ] Delete asks first; Keep cancels; Delete removes and opens the newest left
-- [ ] `Change { tables: ["notes"] }` reads the list again; another table doesn't
-- [ ] `Failed` shows the sentence and the app runs on
-- [ ] The view: the list's rows, the open note, "No notes match …", the empty page
+- [x] `Opened` asks for the schema, then the list; the schema's SQL is exactly the table above
+- [x] `Rows` for `list` fills the list, groups and times as read; an empty list shows "No notes yet"
+- [x] Typing in search asks for the list with the text as a parameter, never in the SQL
+- [x] Picking a note links `note` and asks for it by ID; a link's `note` asks for it on `Opened`
+- [x] A link to a note that's gone opens no note
+- [x] Typing in the title or text asks for a write with a higher `rev` each time, and `WHERE id = ? AND rev < ?`
+- [x] New inserts, then opens the note from `last_rowid`, the search cleared
+- [x] Delete asks first; Keep cancels; Delete removes and opens the newest left
+- [x] `Change { tables: ["notes"] }` reads the list again; another table doesn't
+- [x] `Failed` shows the sentence and the app runs on
+- [x] The view: the list's rows, the open note, "No notes match …", the empty page
 
 ## ACCEPTANCE
-- [ ] Every test above passes
-- [ ] `cargo test`, `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings` and the wasm build pass
+- [x] Every test above passes
+- [x] `cargo test`, `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings` and the wasm build pass
 - [ ] Deployed with `scripts/deploy.sh` as 0.2.0
 - [ ] For the owner, by eye: open `rapidkoi://notes.dafifi.net`, write two notes, search, open one by its link in a new window, delete one; close Rapidkoi, go offline, open Notes again: the notes are there
+
+## AMENDMENTS
+
+- **Q1 (the owner, at approval):** (a): the page scrolls as one; DECISION-002 records the gap for Rapidkoi.
+- **Rows are list items,** in a list: contract 5 lets only a tab or a list item be `selected`, and Rapidkoi stopped the app when a button was. Found by driving the built app through Rapidkoi's shell, headless, with a real database (a scratch test, not kept): first open, a new note, a title saved and listed, the link `note=1`, search and no match, delete asked then the newest opened, the notes still there in a new window.
+- **Found in Rapidkoi, not worked around (DECISION-003):** typing boxes get no accessible name from `label`, and a box of several lines loses its placeholder.
+- **A window opened without a link** shows the list and no note open ("No note open"), as the design's empty right side.
+- `cargo test` (21), `fmt`, `clippy -D warnings` and the wasm build pass. Version 0.2.0, not yet deployed.
