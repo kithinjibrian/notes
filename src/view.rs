@@ -17,6 +17,9 @@ const LIST_WIDTH: u16 = 296;
 /// The note's column at its widest, in pixels: lines stay easy to read.
 const NOTE_WIDTH: u16 = 680;
 
+/// Search's and +'s height, and +'s width, in pixels.
+const CONTROL: u16 = 38;
+
 /// The list's groups, in order.
 const GROUPS: [&str; 3] = ["Today", "This week", "Earlier"];
 
@@ -28,7 +31,8 @@ pub fn page(n: &Notes) -> View<Msg> {
     } else if n.list.is_empty() && n.query.trim().is_empty() {
         empty_page()
     } else {
-        row([list_pane(n), note_pane(n)]).spacing(Space::Xl).style([Layout::align(rapidkoi::style::Align::Start)])
+        // No `align` here: on the row it would shrink both panes to their content.
+        row([list_pane(n), note_pane(n)]).spacing(Space::Xl)
     };
     shown.screen_title("Notes")
 }
@@ -42,9 +46,16 @@ fn empty_page() -> View<Msg> {
 
 /// Search and +, then the notes under their groups.
 fn list_pane(n: &Notes) -> View<Msg> {
-    let search =
-        input(&n.query).placeholder("Search").label("Search notes").on_change(Msg::Search).style([Layout::grow()]);
-    let add = button("+").primary().label("New note").on_press(Msg::New);
+    let search = input(&n.query)
+        .placeholder("Search")
+        .label("Search notes")
+        .on_change(Msg::Search)
+        .style([Layout::grow(), Sizing::height(CONTROL)]);
+    let add = button("+")
+        .primary()
+        .label("New note")
+        .on_press(Msg::New)
+        .style([Sizing::width(CONTROL), Sizing::height(CONTROL)]);
     let mut parts = vec![row([search, add]).spacing(Space::Sm)];
     for group in GROUPS {
         let rows: Vec<View<Msg>> =
@@ -141,7 +152,8 @@ fn note_pane(n: &Notes) -> View<Msg> {
         .lines(20)
         .on_change(Msg::Body)
         .style(bare())
-        .style([Font::size(TextSize::Rem(1.0))]);
+        // The rest of the note's height, so anywhere below the title takes the text.
+        .style([Font::size(TextSize::Rem(1.0)), Layout::grow()]);
     parts.push(column([title, body]).spacing(Space::Md).style([Sizing::max_width(NOTE_WIDTH), Layout::grow()]));
     column(parts).spacing(Space::Lg).style([Layout::grow()])
 }
