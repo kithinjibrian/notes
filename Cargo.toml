@@ -1,6 +1,6 @@
 [package]
 name = "notes"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2021"
 description = "Notes for Rapidkoi: offline, with a link to every note"
 license = "GPL-3.0-only"
@@ -9,7 +9,7 @@ license = "GPL-3.0-only"
 crate-type = ["cdylib"]
 
 [dependencies]
-rapidkoi = { git = "https://github.com/kithinjibrian/rapidkoi-rust", tag = "v0.2.0-pre.3" }
+rapidkoi = { git = "https://github.com/kithinjibrian/rapidkoi-rust", tag = "v0.2.0-pre.4" }
 minicbor = { version = "2", features = ["alloc", "derive"] }
 
 [profile.release]

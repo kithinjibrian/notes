@@ -7,7 +7,8 @@ use crate::store::Row;
 use crate::{Msg, Notes};
 use rapidkoi::raw::{boxed, Role};
 use rapidkoi::style::{
-    Background, Border, Color, Corner, Font, Layout, Sizing, Space as Gap, Spacing, State as On, TextSize, Weight, When,
+    Background, Border, Color, Corner, Font, Layout, Sizing, Space as Gap, Spacing, State as On, Text, TextSize,
+    Weight, When,
 };
 use rapidkoi::{button, column, image, input, row, spacer, text, text_area, Space, View};
 
@@ -110,8 +111,9 @@ fn note_row(r: &Row, open: bool) -> View<Msg> {
     let title = if r.title.trim().is_empty() { "New note" } else { &r.title };
     let preview = if r.preview.is_empty() { "No text" } else { &r.preview };
     let top = row([
-        text(title).style([Font::weight(Weight::Bold)]),
-        spacer(),
+        // One line each, cut with "…": the list keeps its width, whatever the note says.
+        // It takes the room the time leaves, so the time stays at the end.
+        text(title).style([Font::weight(Weight::Bold), Text::truncate(), Layout::grow()]),
         text(&r.when).dim().style([Font::size(TextSize::Small)]),
     ])
     .spacing(Space::Sm);
@@ -132,7 +134,7 @@ fn note_row(r: &Row, open: bool) -> View<Msg> {
         .selected(open)
         .on_press(Msg::Pick(r.id))
         .style(look)
-        .children([top, text(preview).dim().style([Font::size(TextSize::Small)])])
+        .children([top, text(preview).dim().style([Font::size(TextSize::Small), Text::truncate()])])
 }
 
 /// The open note: when it changed and its words, delete, then its title and text.
@@ -252,6 +254,13 @@ mod tests {
         let v = texts(&page(&open_seven()));
         assert!(v.contains("scroll") && v.contains("vertical"));
         assert!(v.contains("padding"));
+    }
+
+    #[test]
+    fn the_list_s_titles_and_previews_stay_one_line() {
+        // Long text wraps by default; the list cuts its lines instead, keeping its width.
+        let v = texts(&page(&open_seven()));
+        assert_eq!(v.matches("truncate").count(), 2);
     }
 
     #[test]

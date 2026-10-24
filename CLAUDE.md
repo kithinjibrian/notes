@@ -2,7 +2,7 @@
 
 Notes is a Rapidkoi app, written in Rust on the SDK `rapidkoi-rust`, that works **fully offline**: notes with a title and longer text, kept in the app's own database on this device, each with its own link (`…?note=4`), and search. It never touches the network: no requests, no servers in its manifest, no sign-in. It's the example of what an app gets from Rapidkoi alone: screens, storage, links.
 
-Rapidkoi (the shell that runs it) is `../rapidkoi`. The SDK is `../rapidkoi-rust`, used here as a git dependency at tag `v0.2.0-pre.3` (contract 7).
+Rapidkoi (the shell that runs it) is `../rapidkoi`. The SDK is `../rapidkoi-rust`, used here as a git dependency at tag `v0.2.0-pre.4` (contract 7).
 
 Where things are recorded: **DECISIONS.md** (each decision and its why), **PRPs/** (a spec per feature), git's log (commit messages say what and why).
 
