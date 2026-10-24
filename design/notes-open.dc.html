@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Notes in Rapidkoi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#ff7700}a:hover{color:#ff8c2e}
+.nt-input::placeholder{color:inherit;opacity:.45}
+.nt-input:focus{outline:none}
+.nt-row:hover{filter:brightness(1.12)}
+.nt-ghost:hover{background:rgba(127,127,127,.14)}
+.nt-field:focus-within{border-color:#ff7700 !important}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; display: flex; flex-direction: column; background: {{c.frame}}; color: {{c.text}}; font-family: system-ui, -apple-system, 'Segoe UI', Cantarell, Ubuntu, sans-serif; overflow: hidden">
+
+  <!-- Rapidkoi's header bar: the instance strip, the address box, account, menu, window controls -->
+  <div style="height: 46px; flex-shrink: 0; display: flex; align-items: center; padding: 0 8px; gap: 8px">
+    <div style="width: 520px; display: flex; align-items: center; gap: 8px">
+      <div style="height: 26px; display: flex; align-items: center; gap: 8px; padding-right: 12px; border-radius: 999px; background: {{c.chip}}; box-shadow: 0 0 0 1px #ff7700">
+        <div style="width: 26px; height: 26px; border-radius: 50%; background: #3fa796"></div>
+        <span style="font-size: 13px; color: {{c.onFrame}}">Notes</span>
+      </div>
+    </div>
+    <div style="flex: 1; display: flex; justify-content: center">
+      <div style="width: 560px; height: 30px; box-sizing: border-box; display: flex; align-items: center; gap: 4px; padding: 0 6px; border-radius: 999px; background: {{c.page}}; border: 1px solid {{c.edge}}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Verified site"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"></path><path d="M9 12l2 2 4-4"></path></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Site settings"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>
+        <span style="flex: 1; font-size: 13px; padding-left: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{address}}</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.6" stroke-linejoin="round" role="img" aria-label="Pin"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3z"></path></svg>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 4px">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c.onFrame}}" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" style="margin: 8px"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c.onFrame}}" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" style="margin: 8px"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{c.onFrame}}" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" style="margin: 8px 8px 8px 16px"><path d="M5 12h14"></path></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{c.onFrame}}" stroke-width="1.6" aria-hidden="true" style="margin: 8px"><rect x="5" y="5" width="14" height="14" rx="1"></rect></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{c.onFrame}}" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" style="margin: 8px"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+    </div>
+  </div>
+
+  <div style="flex: 1; display: flex; min-height: 0">
+    <!-- The page: Notes itself -->
+    <div style="flex: 1; min-width: 0; display: flex; background: {{c.page}}; border-top-right-radius: 12px">
+
+      <!-- The list -->
+      <div style="width: 320px; flex-shrink: 0; display: flex; flex-direction: column; padding: 24px 0 0 24px; box-sizing: border-box">
+        <div style="display: flex; gap: 8px; padding-right: 16px">
+          <label class="nt-field" style="flex: 1; height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 10px; border: 1px solid {{c.edge}}; background: {{c.page}}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" style="opacity: .55; flex-shrink: 0"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+            <input class="nt-input" aria-label="Search notes" placeholder="Search" value="{{query}}" onChange="{{search}}" style="flex: 1; min-width: 0; border: 0; background: transparent; color: {{c.text}}; font: inherit; font-size: 14px">
+          </label>
+          <button onClick="{{create}}" aria-label="New note" style="width: 38px; height: 38px; flex-shrink: 0; border: 0; border-radius: 10px; background: {{c.accent}}; color: {{c.onAccent}}; display: flex; align-items: center; justify-content: center; cursor: pointer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          </button>
+        </div>
+
+        <div style="flex: 1; overflow-y: auto; margin-top: 16px; padding-right: 16px; padding-bottom: 24px; display: flex; flex-direction: column; gap: 2px">
+          <sc-for list="{{groups}}" as="group" hint-placeholder-count="2">
+            <div style="font-size: 12px; font-weight: 600; color: {{c.dim}}; padding: 14px 12px 6px">{{group.name}}</div>
+            <sc-for list="{{group.items}}" as="item" hint-placeholder-count="3">
+              <button class="nt-row" onClick="{{item.pick}}" style="display: flex; flex-direction: column; gap: 4px; text-align: left; width: 100%; border: 0; border-radius: 10px; padding: 10px 12px; cursor: pointer; background: {{item.bg}}; color: {{c.text}}; font: inherit">
+                <span style="display: flex; gap: 8px; align-items: baseline; width: 100%">
+                  <span style="flex: 1; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{item.shown}}</span>
+                  <span style="font-size: 12px; color: {{c.dim}}; flex-shrink: 0">{{item.when}}</span>
+                </span>
+                <span style="font-size: 13px; color: {{c.dim}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%">{{item.preview}}</span>
+              </button>
+            </sc-for>
+          </sc-for>
+          <sc-if value="{{nothing}}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 24px 12px; font-size: 13px; color: {{c.dim}}">No notes match “{{query}}”</div>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="width: 1px; background: {{c.edge}}; margin: 24px 0"></div>
+
+      <!-- The note -->
+      <sc-if value="{{hasNote}}" hint-placeholder-val="{{ true }}">
+        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 24px 48px 0">
+          <div style="display: flex; align-items: center; gap: 8px; height: 38px">
+            <span style="flex: 1; font-size: 12px; color: {{c.dim}}">{{note.when}} · {{words}}</span>
+            <sc-if value="{{notConfirming}}" hint-placeholder-val="{{ true }}">
+              <button class="nt-ghost" onClick="{{askDelete}}" aria-label="Delete note" style="width: 36px; height: 36px; border: 0; border-radius: 50%; background: transparent; color: {{c.text}}; display: flex; align-items: center; justify-content: center; cursor: pointer">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
+              </button>
+            </sc-if>
+            <sc-if value="{{confirming}}" hint-placeholder-val="{{ false }}">
+              <span style="font-size: 13px">Delete this note?</span>
+              <button onClick="{{cancelDelete}}" style="height: 32px; padding: 0 14px; border: 0; border-radius: 8px; background: {{c.control}}; color: {{c.text}}; font: inherit; font-size: 13px; cursor: pointer">Keep</button>
+              <button onClick="{{confirmDelete}}" style="height: 32px; padding: 0 14px; border: 0; border-radius: 8px; background: #c01c28; color: #ffffff; font: inherit; font-size: 13px; cursor: pointer">Delete</button>
+            </sc-if>
+          </div>
+          <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; width: 100%; max-width: 680px; margin: 0 auto; padding-top: 28px">
+            <input class="nt-input" aria-label="Title" placeholder="Title" value="{{note.title}}" onChange="{{editTitle}}" style="border: 0; background: transparent; color: {{c.text}}; font: inherit; font-size: 30px; font-weight: 700; letter-spacing: -0.01em; padding: 0">
+            <textarea class="nt-input" aria-label="Note" placeholder="Write something" value="{{note.body}}" onChange="{{editBody}}" style="flex: 1; margin-top: 16px; margin-bottom: 24px; border: 0; background: transparent; color: {{c.text}}; font: inherit; font-size: 16px; line-height: 1.7; resize: none; padding: 0"></textarea>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{noNote}}" hint-placeholder-val="{{ false }}">
+        <div style="flex: 1; display: flex; align-items: center; justify-content: center; font-size: 14px; color: {{c.dim}}">No note open</div>
+      </sc-if>
+    </div>
+
+    <!-- Rapidkoi's sidebar: the apps -->
+    <div style="width: 50px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; padding-top: 4px">
+      <div style="width: 34px; height: 34px; border-radius: 50%; box-shadow: 0 0 0 1px #ff7700; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: {{c.onFrame}}">N</div>
+      <div style="width: 22px; height: 1px; background: {{c.edge}}"></div>
+      <div style="width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: {{c.onFrame}}">C</div>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c.onFrame}}" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" style="margin-top: 4px"><path d="M12 5v14M5 12h14"></path></svg>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":1280,"height":800}}'>
+const PALETTES = {
+  dark: { frame: '#242424', page: '#161616', edge: '#3a3a3a', text: '#e8e8e8', dim: 'rgba(232,232,232,0.62)', control: '#2e2e2e', selected: '#262626', accent: '#ff7700', onAccent: '#161616', onFrame: '#ffffff', chip: '#2e2e2e' },
+  light: { frame: '#e4e4e7', page: '#ffffff', edge: '#d4d4d4', text: '#1a1a1a', dim: 'rgba(26,26,26,0.65)', control: '#ececec', selected: '#f1f1f2', accent: '#c25400', onAccent: '#ffffff', onFrame: '#1a1a1a', chip: '#ececec' }
+};
+
+const START = [
+  { id: 7, group: 'Today', when: '10:42', title: 'Garden plan for the long rains', body: 'Sukuma and spinach along the fence, where the morning sun reaches first.\n\nTomatoes need stakes before the first heavy rain. Ask Wanjiru about the extra seedlings she offered.\n\nCompost: turn it on Saturday.' },
+  { id: 6, group: 'Today', when: '08:15', title: 'Call with Amina', body: 'She wants the draft by Thursday, not Friday.\nKeep the intro short; the numbers go in the appendix.' },
+  { id: 5, group: 'This week', when: 'Wed', title: 'Books to read next', body: 'Things Fall Apart, again\nThe Dispossessed\nA Grain of Wheat' },
+  { id: 4, group: 'This week', when: 'Mon', title: 'Packing for Mombasa', body: 'Sunscreen, the blue hat, charger, two novels, sandals.\nCheck the train time the night before.' },
+  { id: 3, group: 'Earlier', when: '12 Oct', title: 'Chapati, the way Mum makes it', body: 'Warm water, a little sugar, rest the dough for half an hour.\nRoll, oil, fold, coil, rest again.' },
+  { id: 2, group: 'Earlier', when: '3 Oct', title: 'Questions for the landlord', body: 'When will the water tank be fixed?\nCan the deposit cover the repainting?' }
+];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { notes: START, selected: 7, query: '', confirming: false };
+  }
+
+  update(id, change) {
+    this.setState({ notes: this.state.notes.map((n) => (n.id === id ? { ...n, ...change, when: 'Just now', group: 'Today' } : n)) });
+  }
+
+  renderVals() {
+    const c = PALETTES[this.props.theme ?? 'dark'] ?? PALETTES.dark;
+    const { notes, selected, query, confirming } = this.state;
+    const q = query.trim().toLowerCase();
+    const shown = notes.filter((n) => !q || n.title.toLowerCase().includes(q) || n.body.toLowerCase().includes(q));
+    const order = ['Today', 'This week', 'Earlier'];
+    const groups = order
+      .map((name) => ({
+        name,
+        items: shown.filter((n) => n.group === name).map((n) => ({
+          shown: n.title || 'New note',
+          when: n.when,
+          preview: (n.body.split('\n').find((l) => l.trim()) || 'No text').trim(),
+          bg: n.id === selected ? c.selected : 'transparent',
+          pick: () => this.setState({ selected: n.id, confirming: false })
+        }))
+      }))
+      .filter((g) => g.items.length > 0);
+    const note = notes.find((n) => n.id === selected) || null;
+    const count = note ? note.body.split(/\s+/).filter(Boolean).length : 0;
+    return {
+      c,
+      groups,
+      query,
+      nothing: q !== '' && shown.length === 0,
+      note: note || { title: '', body: '', when: '' },
+      hasNote: note !== null,
+      noNote: note === null,
+      words: count === 1 ? '1 word' : `${count} words`,
+      address: note ? `https://notes.dafifi.net/@0.1.0?note=${note.id}` : 'https://notes.dafifi.net/@0.1.0',
+      confirming,
+      notConfirming: !confirming,
+      search: (e) => this.setState({ query: e.target.value }),
+      create: () => {
+        const id = Math.max(0, ...this.state.notes.map((n) => n.id)) + 1;
+        this.setState({ notes: [{ id, group: 'Today', when: 'Just now', title: '', body: '' }, ...this.state.notes], selected: id, query: '', confirming: false });
+      },
+      editTitle: (e) => this.update(selected, { title: e.target.value }),
+      editBody: (e) => this.update(selected, { body: e.target.value }),
+      askDelete: () => this.setState({ confirming: true }),
+      cancelDelete: () => this.setState({ confirming: false }),
+      confirmDelete: () => {
+        const rest = this.state.notes.filter((n) => n.id !== selected);
+        this.setState({ notes: rest, selected: rest.length ? rest[0].id : null, confirming: false });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

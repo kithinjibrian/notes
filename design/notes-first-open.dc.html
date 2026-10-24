@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Notes, first open</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#ff7700}a:hover{color:#ff8c2e}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; display: flex; flex-direction: column; background: {{c.frame}}; color: {{c.text}}; font-family: system-ui, -apple-system, 'Segoe UI', Cantarell, Ubuntu, sans-serif; overflow: hidden">
+
+  <!-- Rapidkoi's header bar -->
+  <div style="height: 46px; flex-shrink: 0; display: flex; align-items: center; padding: 0 8px; gap: 8px">
+    <div style="width: 520px; display: flex; align-items: center">
+      <div style="height: 26px; display: flex; align-items: center; gap: 8px; padding-right: 12px; border-radius: 999px; background: {{c.chip}}; box-shadow: 0 0 0 1px #ff7700">
+        <div style="width: 26px; height: 26px; border-radius: 50%; background: #3fa796"></div>
+        <span style="font-size: 13px; color: {{c.onFrame}}">Notes</span>
+      </div>
+    </div>
+    <div style="flex: 1; display: flex; justify-content: center">
+      <div style="width: 560px; height: 30px; box-sizing: border-box; display: flex; align-items: center; gap: 4px; padding: 0 6px; border-radius: 999px; background: {{c.page}}; border: 1px solid {{c.edge}}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Verified site"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"></path><path d="M9 12l2 2 4-4"></path></svg>
+        <span style="flex: 1; font-size: 13px; padding-left: 6px">https://notes.dafifi.net/@0.1.0</span>
+      </div>
+    </div>
+    <div style="width: 200px"></div>
+  </div>
+
+  <div style="flex: 1; display: flex; min-height: 0">
+    <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: {{c.page}}; border-top-right-radius: 12px">
+      <sc-if value="{{empty}}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity: .5"><path d="M6 3h9l3 3v15H6z"></path><path d="M9 10h6M9 14h6M9 18h3"></path></svg>
+          <div style="font-size: 20px; font-weight: 700">No notes yet</div>
+          <button onClick="{{create}}" style="height: 40px; padding: 0 18px; border: 0; border-radius: 10px; background: {{c.accent}}; color: {{c.onAccent}}; font: inherit; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            New note
+          </button>
+        </div>
+      </sc-if>
+      <sc-if value="{{started}}" hint-placeholder-val="{{ false }}">
+        <div style="width: 100%; max-width: 680px; align-self: stretch; padding: 90px 48px 0; display: flex; flex-direction: column">
+          <input aria-label="Title" placeholder="Title" style="border: 0; outline: none; background: transparent; color: {{c.text}}; font: inherit; font-size: 30px; font-weight: 700; padding: 0">
+          <textarea aria-label="Note" placeholder="Write something" style="flex: 1; margin: 16px 0 24px; border: 0; outline: none; background: transparent; color: {{c.text}}; font: inherit; font-size: 16px; line-height: 1.7; resize: none; padding: 0"></textarea>
+        </div>
+      </sc-if>
+    </div>
+    <div style="width: 50px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; padding-top: 4px">
+      <div style="width: 34px; height: 34px; border-radius: 50%; box-shadow: 0 0 0 1px #ff7700; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: {{c.onFrame}}">N</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":1280,"height":800}}'>
+const PALETTES = {
+  dark: { frame: '#242424', page: '#161616', edge: '#3a3a3a', text: '#e8e8e8', accent: '#ff7700', onAccent: '#161616', onFrame: '#ffffff', chip: '#2e2e2e' },
+  light: { frame: '#e4e4e7', page: '#ffffff', edge: '#d4d4d4', text: '#1a1a1a', accent: '#c25400', onAccent: '#ffffff', onFrame: '#1a1a1a', chip: '#ececec' }
+};
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { started: false };
+  }
+
+  renderVals() {
+    const c = PALETTES[this.props.theme ?? 'dark'] ?? PALETTES.dark;
+    return {
+      c,
+      empty: !this.state.started,
+      started: this.state.started,
+      create: () => this.setState({ started: true })
+    };
+  }
+}
+</script>
+</body>
+</html>
