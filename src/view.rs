@@ -240,10 +240,11 @@ fn note_pane(n: &Notes) -> View<Msg> {
         .style(bare())
         // The rest of the note's height, so anywhere below the title takes the text.
         .style([Font::size(TextSize::Rem(1.0)), Layout::grow()]);
-    // At most 680 px, in the middle of the room beside the list.
+    // At most 680 px, from the left of the room beside the list. The draft
+    // centres it; that waits on kivuli (Rapidkoi's DECISION-061), then
+    // `Layout::align(Align::Center)` goes back here.
     parts.push(column([title, body]).spacing(Space::Md).style([
         Sizing::max_width(NOTE_WIDTH),
-        Layout::align(Align::Center),
         Layout::grow(),
         Spacing::padding_xy(Gap::Lg, Gap::None),
     ]));
