@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cargo test:*)",
+      "Bash(cargo build:*)",
+      "Bash(cargo fmt:*)",
+      "Bash(cargo clippy:*)",
+      "Bash(cargo doc:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Read(../rapidkoi/**)",
+      "Read(../rapidkoi-rust/**)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Edit(../rapidkoi/**)",
+      "Edit(../rapidkoi-rust/**)",
+      "Edit(../lugha/**)",
+      "Edit(../kivuli/**)"
+    ]
+  },
+  "attribution": {
+    "coAuthoredBy": false,
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  }
+}

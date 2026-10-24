@@ -1,0 +1,18 @@
+[package]
+name = "notes"
+version = "0.1.0"
+edition = "2021"
+description = "Notes for Rapidkoi: offline, with a link to every note"
+license = "GPL-3.0-only"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+rapidkoi = { git = "https://github.com/kithinjibrian/rapidkoi-rust", tag = "v0.1.0" }
+minicbor = { version = "2", features = ["alloc", "derive"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+panic = "abort"
