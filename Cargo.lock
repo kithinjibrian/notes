@@ -24,7 +24,7 @@ dependencies = [
 
 [[package]]
 name = "notes"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "minicbor",
  "rapidkoi",

@@ -33,3 +33,4 @@ Notes runs on today's Rapidkoi (contract 7; 0.2.2 is refused). The list of notes
 - **Delete's round button** is its trash icon with 9 px around it (36 px across), since a box's `align` places it, not its children.
 - Checked headless in Rapidkoi: the packed 0.3.0 bundle (2 assets) opens and runs on contract 7.
 - **0.3.1:** the list's titles and previews are one line cut with "…" (`Text::truncate()`, SDK `v0.2.0-pre.4`; Rapidkoi's DECISION-060): Rapidkoi wraps text to its box by default, and a long preview had pushed the list wider.
+- **0.3.2:** + is the add icon (`assets/add.svg`, Iconsax's add: two strokes), 22 px with 8 px around it, so it's centred in its 38 px button (the owner).

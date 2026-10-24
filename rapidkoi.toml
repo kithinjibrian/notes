@@ -1,6 +1,6 @@
 [app]
 name = "Notes"
-version = "0.3.1"
+version = "0.3.2"
 description = "Notes, kept on this device"
 host = "notes.dafifi.net"
 module = "target/wasm32-unknown-unknown/release/notes.wasm"
@@ -8,6 +8,7 @@ module = "target/wasm32-unknown-unknown/release/notes.wasm"
 [assets]
 "search.svg" = "assets/search.svg"
 "trash.svg" = "assets/trash.svg"
+"add.svg" = "assets/add.svg"
 
 [publish]
 key = "~/.config/rapidkoi/keys/notes.dafifi.net.key"

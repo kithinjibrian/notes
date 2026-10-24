@@ -18,8 +18,12 @@ const LIST_WIDTH: u16 = 296;
 /// The note's column at its widest, in pixels: lines stay easy to read.
 const NOTE_WIDTH: u16 = 680;
 
-/// Search's and +'s height, and +'s width, in pixels.
+/// Search's height, in pixels (+ matches it: its icon and the room around it).
 const CONTROL: u16 = 38;
+
+/// +'s add icon, and the room around it in its button (38 px across), in pixels.
+const ADD_ICON: u16 = 22;
+const AROUND_ADD: u16 = 8;
 
 /// The search icon, in pixels.
 const SEARCH_ICON: u16 = 16;
@@ -73,11 +77,22 @@ fn list_pane(n: &Notes) -> View<Msg> {
         Background::color(Color::system("surface")),
         Border::corner(Corner::Medium),
     ]);
-    let add = button("+")
-        .primary()
+    // The add icon, centred by equal room around it: 8 + 22 + 8 = search's height.
+    let accent = Color::system("accent");
+    let add = boxed()
+        .role(Role::Button)
         .label("New note")
         .on_press(Msg::New)
-        .style([Sizing::width(CONTROL), Sizing::height(CONTROL)]);
+        .style([
+            Spacing::padding(Gap::Px(AROUND_ADD)),
+            Border::corner(Corner::Medium),
+            Background::color(accent.clone()),
+            When(On::Hover, [Background::color(accent.clone().mix(Color::system("text"), 0.1))]),
+            When(On::Pressed, [Background::color(accent.mix(Color::system("text"), 0.2))]),
+        ])
+        .children([image("asset:add.svg")
+            .color(Color::system("on_accent"))
+            .style([Sizing::width(ADD_ICON), Sizing::height(ADD_ICON)])]);
     let mut groups = Vec::new();
     for group in GROUPS {
         let rows: Vec<View<Msg>> =
@@ -264,9 +279,9 @@ mod tests {
     }
 
     #[test]
-    fn search_and_delete_show_their_icons() {
+    fn search_add_and_delete_show_their_icons() {
         let v = texts(&page(&open_seven()));
-        assert!(v.contains("asset:search.svg") && v.contains("asset:trash.svg"));
+        assert!(v.contains("asset:search.svg") && v.contains("asset:trash.svg") && v.contains("asset:add.svg"));
         assert!(v.contains("Delete note"));
     }
 
