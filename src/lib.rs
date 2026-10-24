@@ -58,9 +58,11 @@ impl Notes {
         Next::state(Notes { note: id, confirming: false, ..self }).link(Notes::note).ask(store::note(id))
     }
 
-    /// No note open, and none in the link.
+    /// No note open, and none in the address. `note` stays a number (0),
+    /// not an `Option`: a link can only set a field whose kind the fresh
+    /// state shows (contract 4), and `None` shows none.
     fn close_note(self) -> Next<Self> {
-        Next::state(Notes { note: 0, open: Note::default(), confirming: false, ..self }).link(Notes::note)
+        Next::state(Notes { note: 0, open: Note::default(), confirming: false, ..self }).no_link()
     }
 
     fn on_message(mut self, msg: Msg, value: Option<String>) -> Next<Self> {
@@ -117,7 +119,8 @@ impl App for Notes {
 
     fn handle(self, event: Event<Msg>) -> Next<Self> {
         match event {
-            Event::Init => Next::state(self).link(Notes::note),
+            // A fresh window has no note open; a link's `note` is set after this.
+            Event::Init => Next::state(self).no_link(),
             // Every open: the tables made if they aren't yet.
             Event::Opened => Next::state(self).ask(store::setup()),
             Event::Done { msg, .. } if msg == "setup" => {
@@ -262,8 +265,14 @@ mod tests {
     #[test]
     fn a_link_to_a_note_thats_gone_opens_none() {
         let next = rows_of(Notes { note: 9, ..Notes::default() }, "note", vec![]);
-        assert_eq!(next.linked(), Some(vec![String::from("note")]));
+        // Nothing open: the address names no note (never `note=0`).
+        assert_eq!(next.linked(), Some(vec![]));
         assert_eq!(next.into_state().note, 0);
+    }
+
+    #[test]
+    fn a_fresh_window_names_no_note() {
+        assert_eq!(Notes::default().handle(Event::Init).linked(), Some(vec![]));
     }
 
     #[test]
