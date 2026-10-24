@@ -18,8 +18,8 @@ use store::{cut, Note, Row, MAX_BODY, MAX_TITLE};
 /// The whole window.
 #[derive(Debug, Default, State)]
 pub struct Notes {
-    /// The open note's ID, in the window's address; 0 when none is open.
-    note: u32,
+    /// The open note's ID, in the window's address; `None` when none is open.
+    note: Option<u32>,
     /// What's typed in search.
     query: String,
     /// The list as last read.
@@ -55,14 +55,13 @@ pub enum Msg {
 impl Notes {
     /// The note `id` open, in the link, and read whole.
     fn open_note(self, id: u32) -> Next<Self> {
-        Next::state(Notes { note: id, confirming: false, ..self }).link(Notes::note).ask(store::note(id))
+        Next::state(Notes { note: Some(id), confirming: false, ..self }).link(Notes::note).ask(store::note(id))
     }
 
-    /// No note open, and none in the address. `note` stays a number (0),
-    /// not an `Option`: a link can only set a field whose kind the fresh
-    /// state shows (contract 4), and `None` shows none.
+    /// No note open, and none in the address. A link can still set `note`:
+    /// contract 7's `kinds` say it's a number while it's `None`.
     fn close_note(self) -> Next<Self> {
-        Next::state(Notes { note: 0, open: Note::default(), confirming: false, ..self }).no_link()
+        Next::state(Notes { note: None, open: Note::default(), confirming: false, ..self }).no_link()
     }
 
     fn on_message(mut self, msg: Msg, value: Option<String>) -> Next<Self> {
@@ -103,7 +102,7 @@ impl Notes {
     /// database hasn't caught up with; gone, the link closes.
     fn arrived(self, note: Option<Note>) -> Next<Self> {
         match note {
-            Some(n) if n.id == self.note => {
+            Some(n) if Some(n.id) == self.note => {
                 let open = if self.open.id == n.id && self.open.rev > n.rev { self.open.clone() } else { n };
                 Next::state(Notes { open, problem: None, ..self })
             }
@@ -125,11 +124,9 @@ impl App for Notes {
             Event::Opened => Next::state(self).ask(store::setup()),
             Event::Done { msg, .. } if msg == "setup" => {
                 let read = store::list("list", &self.query);
-                let note = self.note;
-                if note != 0 {
-                    self.open_note(note).ask(read)
-                } else {
-                    Next::state(self).ask(read)
+                match self.note {
+                    Some(note) => self.open_note(note).ask(read),
+                    None => Next::state(self).ask(read),
                 }
             }
             Event::Done { msg, last_rowid, .. } if msg == "created" => {
@@ -158,11 +155,9 @@ impl App for Notes {
             // Another window changed them: read them again.
             Event::Change { tables } if tables.iter().any(|t| t == "notes") => {
                 let read = store::list("list", &self.query);
-                let note = self.note;
-                if note != 0 {
-                    Next::state(self).ask(read).ask(store::note(note))
-                } else {
-                    Next::state(self).ask(read)
+                match self.note {
+                    Some(note) => Next::state(self).ask(read).ask(store::note(note)),
+                    None => Next::state(self).ask(read),
                 }
             }
             Event::Failed { error, .. } => Next::state(Notes { problem: Some(error), ..self }),
@@ -242,7 +237,7 @@ mod tests {
 
     #[test]
     fn a_links_note_is_read_on_opening() {
-        let next = done(Notes { note: 7, ..Notes::default() }, "setup", 0);
+        let next = done(Notes { note: Some(7), ..Notes::default() }, "setup", 0);
         assert_eq!(kinds(next.asks()), vec!["note", "list"]);
         assert_eq!(next.linked(), Some(vec![String::from("note")]));
     }
@@ -264,15 +259,22 @@ mod tests {
 
     #[test]
     fn a_link_to_a_note_thats_gone_opens_none() {
-        let next = rows_of(Notes { note: 9, ..Notes::default() }, "note", vec![]);
+        let next = rows_of(Notes { note: Some(9), ..Notes::default() }, "note", vec![]);
         // Nothing open: the address names no note (never `note=0`).
         assert_eq!(next.linked(), Some(vec![]));
-        assert_eq!(next.into_state().note, 0);
+        assert_eq!(next.into_state().note, None);
     }
 
     #[test]
     fn a_fresh_window_names_no_note() {
+        assert_eq!(Notes::default().note, None);
         assert_eq!(Notes::default().handle(Event::Init).linked(), Some(vec![]));
+    }
+
+    #[test]
+    fn a_link_can_set_the_note_though_it_starts_empty() {
+        // Contract 7's kinds: `note` is a number even while it's None.
+        assert!(<Notes as rapidkoi::State>::kinds().contains(&(String::from("note"), "number")));
     }
 
     #[test]
@@ -304,7 +306,7 @@ mod tests {
         let made = done(next.into_state(), "created", 12);
         assert_eq!(kinds(made.asks()), vec!["note", "list"]);
         let n = made.into_state();
-        assert_eq!((n.note, n.query.as_str()), (12, ""));
+        assert_eq!((n.note, n.query.as_str()), (Some(12), ""));
     }
 
     #[test]
@@ -318,7 +320,7 @@ mod tests {
         assert_eq!(kinds(reread.asks()), vec!["after_delete"]);
         let next = rows_of(reread.into_state(), "after_delete", vec![list_row(5, "Books")]);
         assert_eq!(kinds(next.asks()), vec!["note"]);
-        assert_eq!(next.into_state().note, 5);
+        assert_eq!(next.into_state().note, Some(5));
     }
 
     #[test]

@@ -2,7 +2,7 @@
 
 Notes is a Rapidkoi app, written in Rust on the SDK `rapidkoi-rust`, that works **fully offline**: notes with a title and longer text, kept in the app's own database on this device, each with its own link (`…?note=4`), and search. It never touches the network: no requests, no servers in its manifest, no sign-in. It's the example of what an app gets from Rapidkoi alone: screens, storage, links.
 
-Rapidkoi (the shell that runs it) is `../rapidkoi`. The SDK is `../rapidkoi-rust`, used here as a git dependency at tag `v0.1.0`.
+Rapidkoi (the shell that runs it) is `../rapidkoi`. The SDK is `../rapidkoi-rust`, used here as a git dependency at tag `v0.2.0-pre.4` (contract 7).
 
 Where things are recorded: **DECISIONS.md** (each decision and its why), **PRPs/** (a spec per feature), git's log (commit messages say what and why).
 
@@ -29,9 +29,9 @@ Where things are recorded: **DECISIONS.md** (each decision and its why), **PRPs/
 - **Everything lives in the state.** No `static`, no globals, nothing kept between calls: Rapidkoi rebuilds a window from its state (restore, reload, links), and hidden variables break that. The state derives `rapidkoi::State` and `Default`; `Default` is a fresh start.
 - **Events:** `Init` (fresh), `Opened` (every open: ask for what you need here), `Resume`, `Change { tables }` (another window changed these tables: read again), `Message`, and the database's answers `Rows`, `Done`, `Failed`. Ignore the rest with `_ => Next::state(self)`.
 - **Links:** `Next::state(s).link(Notes::field)` puts a field in the window's address (`.then(...)` for a nested field). A link carries an ID, never the note's content: the window that opens it reads the row.
-- **Storage** (contract 6): `Ask::sql(msg, sql, params![...])` for one statement, answered by `Rows`; `Ask::sql_batch(msg, steps)` for several in one transaction, answered by `Done`. Values go in **only as parameters**, never formatted into SQL. The schema is made on open with `CREATE TABLE IF NOT EXISTS …` and versioned with `PRAGMA user_version`; a change is a migration, never a dropped table. The database is the truth: the window keeps a copy of the rows it read and reads again after its own writes and on `Change`.
+- **Storage:** `Ask::sql(msg, sql, params![...])` for one statement, answered by `Rows`; `Ask::sql_batch(msg, steps)` for several in one transaction, answered by `Done`. Values go in **only as parameters**, never formatted into SQL. The schema is made on open with `CREATE TABLE IF NOT EXISTS …` and versioned with `PRAGMA user_version`; a change is a migration, never a dropped table. The database is the truth: the window keeps a copy of the rows it read and reads again after its own writes and on `Change`.
 - **Limits:** a call takes at most 1 second, an answer 10,000 rows or 4 MB (`cut` says rows were left out), a database 100 MB, a statement 100 KB, a batch 100 steps. A `Failed` comes with Rapidkoi's sentence: show it, don't crash.
-- **Screens:** the SDK's widgets (`column`, `row`, `text`, `button`, `input`, `text_area`, `checkbox`, `tabs`, `spacer`) and `.style([...])` with its typed values. Prefer Rapidkoi's colour names and spacing (`Space::Sm`, …) over raw values, so the person's light, dark, contrast and text size apply.
+- **Screens:** Rapidkoi never scrolls the page: Notes fills the window, pads itself, and marks what scrolls (`Layout::scroll()`). The SDK's widgets (`column`, `row`, `text`, `button`, `input`, `text_area`, `checkbox`, `tabs`, `spacer`, `image`) and `.style([...])` with its typed values. Prefer Rapidkoi's colour names and spacing (`Space::Sm`, …) over raw values, so the person's light, dark, contrast and text size apply.
 - **Messages:** an enum deriving `rapidkoi::Message`, with parts of the app mapping theirs (`.map`).
 
 ## WHERE TO LOOK
@@ -39,7 +39,7 @@ Where things are recorded: **DECISIONS.md** (each decision and its why), **PRPs/
 - The SDK's source (the tag in use): `../rapidkoi-rust/rapidkoi/src/` (`lib.rs` App, Ask, export!; `abi.rs` Event; `state.rs` State, Next, links; `storage.rs` Value, params!; `view.rs` widgets; `style.rs`; `raw.rs`). Its docs: `cargo doc --open -p rapidkoi`.
 - The shortest app: `../rapidkoi-rust/examples/counter/src/lib.rs`.
 - A real app with storage, links and an editor (removed from Rapidkoi, still worth reading): `git -C ../rapidkoi show 3db1f65^:guest/rust/tasks/src/lib.rs`.
-- The contract itself: `../rapidkoi/docs/specs/contract-6.md` (storage), `contract-5.md` (screens, styles, roles), `contract-4.md` (state, links), `app-events.md`.
+- The contract itself: `../rapidkoi/docs/specs/contract-7.md` (state, links, events, screens, styles, scrolling, pictures, storage).
 
 ## COMMANDS
 

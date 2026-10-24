@@ -8,5 +8,6 @@ RAPIDKOI="${RAPIDKOI:-../rapidkoi/main}"
 cargo build --release --target wasm32-unknown-unknown
 "$RAPIDKOI" pack target/wasm32-unknown-unknown/release/notes.wasm \
     --name Notes --version "$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)" \
-    --description "Notes, kept on this device" -o notes.rkb --force
+    --description "Notes, kept on this device" \
+    --asset search.svg=assets/search.svg --asset trash.svg=assets/trash.svg --asset add.svg=assets/add.svg -o notes.rkb --force
 exec "$RAPIDKOI" serve notes.rkb --port "${PORT:-8002}"
