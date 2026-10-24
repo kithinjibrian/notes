@@ -1,6 +1,3 @@
-# Notes, as a signed app at notes.dafifi.net. Paths are relative to this file.
-# ../rapidkoi/main keygen (once), then cargo build --release --target wasm32-unknown-unknown,
-# then ../rapidkoi/main publish: the site is written to site/ (not committed).
 [app]
 name = "Notes"
 version = "0.1.0"
@@ -9,7 +6,6 @@ host = "notes.dafifi.net"
 module = "target/wasm32-unknown-unknown/release/notes.wasm"
 
 [publish]
-# Never inside this folder: keygen refuses.
 key = "~/.config/rapidkoi/keys/notes.dafifi.net.key"
 site = "site"
 keep = 3
