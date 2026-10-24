@@ -36,3 +36,4 @@ Notes runs on today's Rapidkoi (contract 7; 0.2.2 is refused). The list of notes
 - **0.3.2:** + is the add icon (`assets/add.svg`, Iconsax's add: two strokes), 22 px with 8 px around it, so it's centred in its 38 px button (the owner).
 - **0.3.3 (the owner: "not faithful to what we drafted"):** the draft's measurements from `design/Notes a note open-html/Main.dc.html`: a 320 px list with 24 px around it, an outlined search field, + as an 18 px icon in a 38 px button, rows with 10 px corners and the draft's text sizes (as rems), a 1 px divider clear of the edges, and the note in a column at most 680 px wide centred in the room beside the list with 48 px either side; the time and word count stay on one line.
 - **0.3.4:** the note's column fills the room from the left again (0.3.3's centring squeezed it: kivuli's clamp can't centre, DECISION-004).
+- **0.3.5:** the note's column is centred again (kivuli 0.62, DECISION-004 resolved).

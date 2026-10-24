@@ -12,17 +12,6 @@ Each decision and its why. An `open` one blocks the work it affects: ask the own
 
 ## DEFERRED
 
-### DECISION-004 — The note's column isn't centred (kivuli)
-
-**Status:** deferred (needs kivuli: Rapidkoi's DECISION-061)
-**Raised:** 2026-10-24, Notes 0.3.3
-
-**Question:** The draft centres the note in a column at most 680 px wide (`max-width` and `margin: auto`). kivuli's clamp, which draws a maximum width, always puts its child at the start, and a centred one shrinks to its content: the text wrapped in a narrow strip and the title was cut.
-
-**Meanwhile (the owner):** the column fills the room beside the list, at most 680 px, from the left. Once kivuli centres a clamp's child, `Layout::align(Align::Center)` goes back on it. Nothing is worked around.
-
----
-
 ### DECISION-003 — Rapidkoi doesn't name typing boxes, and drops a text area's placeholder
 
 **Status:** deferred (part done; the rest needs kivuli's accessible names, Rapidkoi's DECISION-050)
@@ -37,6 +26,19 @@ Each decision and its why. An `open` one blocks the work it affects: ask the own
 ---
 
 ## RESOLVED
+
+### DECISION-004 — The note's column isn't centred (kivuli)
+
+**Status:** resolved (kivuli 0.62, Notes 0.3.5)
+**Raised:** 2026-10-24, Notes 0.3.3
+
+**Question:** The draft centres the note in a column at most 680 px wide (`max-width` and `margin: auto`). kivuli's clamp, which draws a maximum width, always puts its child at the start, and a centred one shrinks to its content: the text wrapped in a narrow strip and the title was cut.
+
+**Meanwhile (the owner):** the column fills the room beside the list, at most 680 px, from the left. Once kivuli centres a clamp's child, `Layout::align(Align::Center)` goes back on it. Nothing is worked around.
+
+**Outcome:** kivuli 0.62 gives a centred node with a maximum width the room up to its maximum, in the middle: the note's column is centred again.
+
+---
 
 ### DECISION-002 — The list and the note can't scroll on their own
 
