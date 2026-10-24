@@ -20,13 +20,15 @@ Notes runs on today's Rapidkoi (contract 7; 0.2.2 is refused). The list of notes
 - No new screens or copy; the + stays a +.
 
 ## TESTS
-- [ ] A fresh window's `note` is `None` and its address names no note; picking a note links `note`; a link's note is read on opening; a note that's gone closes to `None`
-- [ ] The list's notes are in a scrolling box; the page pads itself
-- [ ] The search field shows `asset:search.svg`; Delete shows `asset:trash.svg`, named "Delete note"
+- [x] A fresh window's `note` is `None` and its address names no note; picking a note links `note`; a link's note is read on opening; a note that's gone closes to `None`
+- [x] The list's notes are in a scrolling box; the page pads itself
+- [x] The search field shows `asset:search.svg`; Delete shows `asset:trash.svg`, named "Delete note"
 
 ## ACCEPTANCE
-- [ ] `cargo test`, `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, the wasm build
+- [x] `cargo test`, `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, the wasm build
 - [ ] For the owner, by eye (`scripts/dev.sh`, `../rapidkoi/main rapidkoi://localhost:8002`): many notes scroll in the list while the note stays; the icons show, light and dark; no `note=0`
 
 ## AMENDMENTS
 - **Approved by the owner, 2026-10-24** (the scope above, in Rapidkoi's session: "yes").
+- **Delete's round button** is its trash icon with 9 px around it (36 px across), since a box's `align` places it, not its children.
+- Checked headless in Rapidkoi: the packed 0.3.0 bundle (2 assets) opens and runs on contract 7.

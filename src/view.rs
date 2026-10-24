@@ -9,7 +9,7 @@ use rapidkoi::raw::{boxed, Role};
 use rapidkoi::style::{
     Background, Border, Color, Corner, Font, Layout, Sizing, Space as Gap, Spacing, State as On, TextSize, Weight, When,
 };
-use rapidkoi::{button, column, input, row, spacer, text, text_area, Space, View};
+use rapidkoi::{button, column, image, input, row, spacer, text, text_area, Space, View};
 
 /// The list's width, in pixels.
 const LIST_WIDTH: u16 = 296;
@@ -19,6 +19,13 @@ const NOTE_WIDTH: u16 = 680;
 
 /// Search's and +'s height, and +'s width, in pixels.
 const CONTROL: u16 = 38;
+
+/// The search icon, in pixels.
+const SEARCH_ICON: u16 = 16;
+
+/// Delete's trash icon, and the room around it in its round button (36 px across), in pixels.
+const TRASH_ICON: u16 = 18;
+const AROUND_TRASH: u16 = 9;
 
 /// The list's groups, in order.
 const GROUPS: [&str; 3] = ["Today", "This week", "Earlier"];
@@ -34,7 +41,8 @@ pub fn page(n: &Notes) -> View<Msg> {
         // No `align` here: on the row it would shrink both panes to their content.
         row([list_pane(n), note_pane(n)]).spacing(Space::Xl)
     };
-    shown.screen_title("Notes")
+    // Rapidkoi never scrolls an app's page: Notes fills the window and pads itself.
+    shown.padding(Space::Lg).style([Layout::grow()]).screen_title("Notes")
 }
 
 /// "No notes yet" and New note.
@@ -46,24 +54,37 @@ fn empty_page() -> View<Msg> {
 
 /// Search and +, then the notes under their groups.
 fn list_pane(n: &Notes) -> View<Msg> {
-    let search = input(&n.query)
-        .placeholder("Search")
-        .label("Search notes")
-        .on_change(Msg::Search)
-        .style([Layout::grow(), Sizing::height(CONTROL)]);
+    // One field: the icon, then the text with no edge of its own.
+    let icon = image("asset:search.svg").color(Color::system("text_dim")).style([
+        Sizing::width(SEARCH_ICON),
+        Sizing::height(SEARCH_ICON),
+        Layout::align(rapidkoi::style::Align::Center),
+    ]);
+    let typed = input(&n.query).placeholder("Search").label("Search notes").on_change(Msg::Search).style([
+        Border::all(0, Color::system("surface")),
+        Background::color(Color::system("surface")),
+        Layout::grow(),
+    ]);
+    let search = row([icon, typed]).spacing(Space::Sm).style([
+        Layout::grow(),
+        Sizing::height(CONTROL),
+        Spacing::padding_xy(Gap::None, Gap::Md),
+        Background::color(Color::system("surface")),
+        Border::corner(Corner::Medium),
+    ]);
     let add = button("+")
         .primary()
         .label("New note")
         .on_press(Msg::New)
         .style([Sizing::width(CONTROL), Sizing::height(CONTROL)]);
-    let mut parts = vec![row([search, add]).spacing(Space::Sm)];
+    let mut groups = Vec::new();
     for group in GROUPS {
         let rows: Vec<View<Msg>> =
-            n.list.iter().filter(|r| r.group == group).map(|r| note_row(r, r.id == n.note)).collect();
+            n.list.iter().filter(|r| r.group == group).map(|r| note_row(r, Some(r.id) == n.note)).collect();
         if rows.is_empty() {
             continue;
         }
-        parts.push(
+        groups.push(
             column([
                 text(group).dim().style([
                     Font::size(TextSize::Small),
@@ -77,9 +98,11 @@ fn list_pane(n: &Notes) -> View<Msg> {
         );
     }
     if n.list.is_empty() {
-        parts.push(text(&format!("No notes match “{}”", n.query.trim())).dim());
+        groups.push(text(&format!("No notes match “{}”", n.query.trim())).dim());
     }
-    column(parts).spacing(Space::Md).style([Sizing::width(LIST_WIDTH)])
+    // Search and + stay; the notes under them scroll on their own, in the height left.
+    let notes = column(groups).spacing(Space::Md).style([Layout::scroll(), Layout::grow()]);
+    column([row([search, add]).spacing(Space::Sm), notes]).spacing(Space::Md).style([Sizing::width(LIST_WIDTH)])
 }
 
 /// One note in the list: its title and time, and its first line. The open one is shaded and selected.
@@ -127,7 +150,20 @@ fn note_pane(n: &Notes) -> View<Msg> {
         ])
         .spacing(Space::Sm)
     } else {
-        button("Delete").subtle().label("Delete note").on_press(Msg::AskDelete)
+        // A round button holding the trash icon, as the design draws it.
+        boxed()
+            .role(Role::Button)
+            .label("Delete note")
+            .on_press(Msg::AskDelete)
+            .style([
+                Layout::align(rapidkoi::style::Align::Center),
+                Spacing::padding(Gap::Px(AROUND_TRASH)),
+                Border::corner(Corner::Round),
+                When(On::Hover, [Background::color(Color::system("surface"))]),
+            ])
+            .children([image("asset:trash.svg")
+                .color(Color::system("text"))
+                .style([Sizing::width(TRASH_ICON), Sizing::height(TRASH_ICON)])])
     };
     let mut parts = vec![row([
         text(&format!("{} · {counted}", n.open.when)).dim().style([Font::size(TextSize::Small)]),
@@ -182,7 +218,7 @@ mod tests {
     fn the_list_groups_its_notes_and_the_open_one_shows() {
         let n = Notes {
             read: true,
-            note: 7,
+            note: Some(7),
             list: vec![row_of(7, "Garden", "Today"), row_of(3, "Chapati", "Earlier")],
             open: Note {
                 id: 7,
@@ -199,6 +235,32 @@ mod tests {
         assert!(v.contains("Sukuma first, then tomatoes"));
     }
 
+    /// A window with note 7 open.
+    fn open_seven() -> Notes {
+        Notes {
+            read: true,
+            note: Some(7),
+            list: vec![row_of(7, "Garden", "Today")],
+            open: Note { id: 7, title: "Garden".into(), ..Note::default() },
+            ..Notes::default()
+        }
+    }
+
+    #[test]
+    fn the_list_scrolls_on_its_own_and_the_page_pads_itself() {
+        // Rapidkoi never scrolls an app's page (contract 7).
+        let v = texts(&page(&open_seven()));
+        assert!(v.contains("scroll") && v.contains("vertical"));
+        assert!(v.contains("padding"));
+    }
+
+    #[test]
+    fn search_and_delete_show_their_icons() {
+        let v = texts(&page(&open_seven()));
+        assert!(v.contains("asset:search.svg") && v.contains("asset:trash.svg"));
+        assert!(v.contains("Delete note"));
+    }
+
     #[test]
     fn a_search_with_nothing_found_says_so() {
         let v = texts(&page(&Notes { read: true, query: "zebra".into(), ..Notes::default() }));
@@ -210,7 +272,7 @@ mod tests {
         let open = Note { id: 7, title: "Garden".into(), ..Note::default() };
         let n = Notes {
             read: true,
-            note: 7,
+            note: Some(7),
             list: vec![row_of(7, "Garden", "Today")],
             open,
             confirming: true,
@@ -225,7 +287,7 @@ mod tests {
         let open = Note { id: 7, ..Note::default() };
         let n = Notes {
             read: true,
-            note: 7,
+            note: Some(7),
             list: vec![row_of(7, "", "Today")],
             open,
             problem: Some("This app has no room left (100 MB)".into()),
