@@ -1,0 +1,32 @@
+## FEATURE: Notes on contract 7: the list scrolls on its own, icons from its bundle, no `note=0`
+
+## OBJECTIVE
+Notes runs on today's Rapidkoi (contract 7; 0.2.2 is refused). The list of notes scrolls on its own while the open note stays put, and a long note scrolls inside its text box. Search shows a search icon and Delete a trash icon, both drawn in the theme's colours. A window with no note open names none in its address, and a link still opens a note.
+
+## CONTEXT
+- Agreed with the owner in Rapidkoi's session (2026-10-24, after PRP-045/046/047 and kivuli 0.58): the SDK to `rapidkoi-rust` `v0.2.0-pre.3`, the scrolling list, the icons (copied from Rapidkoi's Iconsax set, `../rapidkoi/assets/icons/search.svg` and `trash.svg`, their white made `currentColor`), `note: Option<u32>`.
+- Rapidkoi now: never scrolls an app's page (its PRP-046), so Notes pads and lays itself out; `Layout::scroll()` on a box; `image("asset:…").color(…)` (its PRP-047); a link can set a field that starts `None` (`kinds`, its DECISION-056); a text area's placeholder is drawn (kivuli 0.55).
+- Files: `Cargo.toml`, `rapidkoi.toml` (`[assets]`), `scripts/dev.sh` (`--asset`), `src/lib.rs` (`note`), `src/view.rs`, `assets/`; DECISIONS-002 resolved, 003 updated.
+
+## REQUIREMENTS
+### Must Do
+- `rapidkoi = { …, tag = "v0.2.0-pre.3" }`; version 0.3.0.
+- `note: Option<u32>`: `None` is no note open (never in the address); a link's `note=4` still opens note 4.
+- The page pads itself (`Space::Lg`) and fills the window; the list pane is search and + over a scrolling column of notes that takes the rest of the height.
+- The search field: a dimmed search icon (16 px) before the text, inside one field.
+- Delete: a round, borderless button holding the trash icon (18 px), named "Delete note".
+- Both icons packed in the bundle (`[assets]` and `dev.sh`), recoloured from Rapidkoi's names.
+### Must NOT Do
+- No new screens or copy; the + stays a +.
+
+## TESTS
+- [ ] A fresh window's `note` is `None` and its address names no note; picking a note links `note`; a link's note is read on opening; a note that's gone closes to `None`
+- [ ] The list's notes are in a scrolling box; the page pads itself
+- [ ] The search field shows `asset:search.svg`; Delete shows `asset:trash.svg`, named "Delete note"
+
+## ACCEPTANCE
+- [ ] `cargo test`, `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, the wasm build
+- [ ] For the owner, by eye (`scripts/dev.sh`, `../rapidkoi/main rapidkoi://localhost:8002`): many notes scroll in the list while the note stays; the icons show, light and dark; no `note=0`
+
+## AMENDMENTS
+- **Approved by the owner, 2026-10-24** (the scope above, in Rapidkoi's session: "yes").
