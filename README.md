@@ -1,6 +1,6 @@
 # Notes
 
-Notes for [Rapidkoi](https://github.com/kithinjibrian/rapidkoi): a title and text for each note, kept on this device in the app's own database, each with its own link, and search. It works fully offline and never uses the network.
+Notes for Rapidkoi: a title and text for each note, kept on this device in the app's own database, each with its own link, and search. It works fully offline and never uses the network.
 
 Written in Rust on [rapidkoi-rust](https://github.com/kithinjibrian/rapidkoi-rust).
 
