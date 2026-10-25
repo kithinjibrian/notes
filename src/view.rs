@@ -46,7 +46,7 @@ const GROUPS: [&str; 3] = ["Today", "This week", "Earlier"];
 const ROW_TITLE: f64 = 0.875;
 const PREVIEW: f64 = 0.8125;
 const SMALL: f64 = 0.75;
-// The note's title and text, a step above the draft's 30 and 16 px (the owner).
+// The note's title and text, a step above the draft's (1.875 and 1 times the body size; the owner).
 const NOTE_TITLE: f64 = 2.125;
 const NOTE_TEXT: f64 = 1.125;
 
