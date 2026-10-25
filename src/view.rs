@@ -46,7 +46,9 @@ const GROUPS: [&str; 3] = ["Today", "This week", "Earlier"];
 const ROW_TITLE: f64 = 0.875;
 const PREVIEW: f64 = 0.8125;
 const SMALL: f64 = 0.75;
-const NOTE_TITLE: f64 = 1.875;
+// The note's title and text, a step above the draft's 30 and 16 px (the owner).
+const NOTE_TITLE: f64 = 2.125;
+const NOTE_TEXT: f64 = 1.125;
 
 /// The window: the empty page before the first note, else the list and the note.
 pub fn page(n: &Notes) -> View<Msg> {
@@ -239,7 +241,7 @@ fn note_pane(n: &Notes) -> View<Msg> {
         .on_change(Msg::Body)
         .style(bare())
         // The rest of the note's height, so anywhere below the title takes the text.
-        .style([Font::size(TextSize::Rem(1.0)), Layout::grow()]);
+        .style([Font::size(TextSize::Rem(NOTE_TEXT)), Layout::grow()]);
     // At most 680 px, in the middle of the room beside the list (kivuli 0.62 centres it).
     parts.push(column([title, body]).spacing(Space::Md).style([
         Sizing::max_width(NOTE_WIDTH),
