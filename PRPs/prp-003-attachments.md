@@ -54,3 +54,12 @@ In an open note, **Attach** opens Rapidkoi's dialog ("Open a file for Notes"); t
 - [ ] Every test above passes.
 - [ ] `cargo test`, `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings` and the wasm build pass; no file over 500 lines.
 - [ ] For the owner, by eye (`scripts/dev.sh`, then `../rapidkoi/main rapidkoi://localhost:8002`): Attach shows "Open a file for Notes"; a photo shows in the note at its width; a PDF shows as a row, and Save a copy writes it elsewhere; Remove takes one away; a second window of the same note shows the attachment; deleting the note takes its attachments.
+
+## BUILD NOTES
+
+- **Status:** approved (the owner, 2026-11-01: "approved"); built on its branch.
+- The attachments live in the state as `files` with `files_of` (the note they're for), not inside `open`: a note read again (`arrived`) would otherwise drop them, and a note's files can answer before the note itself does.
+- Opening a note reads its attachments with it (`note`, then `files`).
+- "Attach" sits beside delete in the note's top row; the attachments' text sizes are 0.875 rem.
+- Sizes round to the nearest tenth of a MB.
+- `cargo test` (38), `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings` and the wasm build pass; files 206, 472, 252 and about 385 lines.

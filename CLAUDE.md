@@ -2,7 +2,7 @@
 
 Notes is a Rapidkoi app, written in Rust on the SDK `rapidkoi-rust`, that works **fully offline**: notes with a title and longer text, kept in the app's own database on this device, each with its own link (`…?note=4`), and search. It never touches the network: no requests, no servers in its manifest, no sign-in. It's the example of what an app gets from Rapidkoi alone: screens, storage, links.
 
-Rapidkoi (the shell that runs it) is `../rapidkoi`. The SDK is `../rapidkoi-rust`, used here as a git dependency at tag `v0.2.0-pre.4` (contract 7).
+Rapidkoi (the shell that runs it) is `../rapidkoi`. The SDK is `../rapidkoi-rust`, used here as a git dependency at tag `v0.3.0-pre.4` (contract 9: blobs, the person's files, parts and `now`). A note keeps attachments the person chose (PRP-003), kept on this device as blobs.
 
 Where things are recorded: **DECISIONS.md** (each decision and its why), **PRPs/** (a spec per feature), git's log (commit messages say what and why).
 
@@ -39,7 +39,7 @@ Where things are recorded: **DECISIONS.md** (each decision and its why), **PRPs/
 - The SDK's source (the tag in use): `../rapidkoi-rust/rapidkoi/src/` (`lib.rs` App, Ask, export!; `abi.rs` Event; `state.rs` State, Next, links; `storage.rs` Value, params!; `view.rs` widgets; `style.rs`; `raw.rs`). Its docs: `cargo doc --open -p rapidkoi`.
 - The shortest app: `../rapidkoi-rust/examples/counter/src/lib.rs`.
 - A real app with storage, links and an editor (removed from Rapidkoi, still worth reading): `git -C ../rapidkoi show 3db1f65^:guest/rust/tasks/src/lib.rs`.
-- The contract itself: `../rapidkoi/docs/specs/contract-7.md` (state, links, events, screens, styles, scrolling, pictures, storage).
+- The contract itself: `../rapidkoi/docs/specs/contract-9.md` (state, links, events, screens, styles, scrolling, pictures, storage, blobs, the person's files).
 
 ## COMMANDS
 
