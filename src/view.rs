@@ -200,8 +200,9 @@ fn note_pane(n: &Notes) -> View<Msg> {
         ])
         .spacing(Space::Sm)
     } else {
-        // A round button holding the trash icon, as the draft draws it.
-        boxed()
+        // Attach (PRP-003), then a round button holding the trash icon, as the draft draws it.
+        let attach = button("Attach").on_press(Msg::Attach);
+        let trash = boxed()
             .role(Role::Button)
             .label("Delete note")
             .on_press(Msg::AskDelete)
@@ -213,7 +214,8 @@ fn note_pane(n: &Notes) -> View<Msg> {
             ])
             .children([image("asset:trash.svg")
                 .color(Color::system("text"))
-                .style([Sizing::width(TRASH_ICON), Sizing::height(TRASH_ICON)])])
+                .style([Sizing::width(TRASH_ICON), Sizing::height(TRASH_ICON)])]);
+        row([attach, trash]).spacing(Space::Sm)
     };
     // The time and words take the room delete leaves, on one line.
     let when = text(&format!("{} · {counted}", n.open.when)).dim().style([
@@ -243,7 +245,12 @@ fn note_pane(n: &Notes) -> View<Msg> {
         // The rest of the note's height, so anywhere below the title takes the text.
         .style([Font::size(TextSize::Rem(NOTE_TEXT)), Layout::grow()]);
     // At most 680 px, in the middle of the room beside the list (kivuli 0.62 centres it).
-    parts.push(column([title, body]).spacing(Space::Md).style([
+    let mut note = vec![title, body];
+    // Its attachments below the text, once they're read for this note.
+    if n.files_of == n.open.id && !n.files.is_empty() {
+        note.push(crate::attachments::view(&n.files));
+    }
+    parts.push(column(note).spacing(Space::Md).style([
         Sizing::max_width(NOTE_WIDTH),
         Layout::align(Align::Center),
         Layout::grow(),
@@ -360,5 +367,18 @@ mod tests {
         };
         let v = texts(&page(&n));
         assert!(v.contains("This app has no room left") && v.contains("New note"));
+    }
+
+    #[test]
+    fn the_open_note_offers_attach_and_shows_its_attachments() {
+        let mut n = open_seven();
+        let none = texts(&page(&n));
+        assert!(none.contains("Attach") && !none.contains("blob:"));
+        n.files = vec![crate::attachments::Attachment { key: "file-a".into(), name: "photo.png".into(), size: 10 }];
+        n.files_of = 7;
+        assert!(texts(&page(&n)).contains("blob:file-a"));
+        // Another note's attachments never show on this one.
+        n.files_of = 5;
+        assert!(!texts(&page(&n)).contains("blob:file-a"));
     }
 }

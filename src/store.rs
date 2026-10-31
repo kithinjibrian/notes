@@ -11,10 +11,14 @@ use rapidkoi::{params, Ask, Value};
 /// `AUTOINCREMENT` keeps an ID, and the link to it, from ever being reused.
 /// `rev` is how far a note's edits got: a write that lands late never
 /// overwrites a newer one.
-pub const SETUP: [&str; 3] = [
+/// Version 2 adds `attachments` (PRP-003): a file kept with a note, its blob
+/// belonging to its row by `key`, so removing the row removes the file.
+pub const SETUP: [&str; 5] = [
     "CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL DEFAULT '', body TEXT NOT NULL DEFAULT '', created INTEGER NOT NULL, updated INTEGER NOT NULL, rev INTEGER NOT NULL DEFAULT 0)",
     "CREATE INDEX IF NOT EXISTS notes_updated ON notes (updated)",
-    "PRAGMA user_version = 1",
+    "CREATE TABLE IF NOT EXISTS attachments (key TEXT PRIMARY KEY, note INTEGER NOT NULL, name TEXT NOT NULL, size INTEGER NOT NULL, created INTEGER NOT NULL)",
+    "CREATE INDEX IF NOT EXISTS attachments_note ON attachments (note)",
+    "PRAGMA user_version = 2",
 ];
 
 /// When a note was changed, as the list groups it: 0 today, 1 this week, 2 before.
@@ -101,9 +105,15 @@ fn save(column: &str, id: u32, value: &str, rev: u32) -> Ask {
     Ask::sql_batch("saved", alloc::vec![(sql, params![value, rev, id, rev])])
 }
 
-/// Removing a note.
+/// Removing a note, its attachments first: Rapidkoi removes their files with their rows.
 pub fn delete(id: u32) -> Ask {
-    Ask::sql_batch("deleted", alloc::vec![("DELETE FROM notes WHERE id = ?".into(), params![id])])
+    Ask::sql_batch(
+        "deleted",
+        alloc::vec![
+            ("DELETE FROM attachments WHERE note = ?".into(), params![id]),
+            ("DELETE FROM notes WHERE id = ?".into(), params![id]),
+        ],
+    )
 }
 
 /// The list's rows, as read by `list`.
