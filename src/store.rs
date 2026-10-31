@@ -165,6 +165,7 @@ fn when(age: i64, parts: &[Value]) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use rapidkoi::Step;
 
     fn t(s: &str) -> Value {
         Value::Text(s.into())
@@ -228,10 +229,13 @@ mod tests {
     #[test]
     fn a_save_only_lands_on_an_older_edit() {
         match save_body(4, "Hello", 9) {
-            Ask::SqlBatch(_, steps) => {
-                assert!(steps[0].0.ends_with("WHERE id = ? AND rev < ?"));
-                assert_eq!(steps[0].1, params![String::from("Hello"), 9u32, 4u32, 9u32]);
-            }
+            Ask::SqlBatch(_, steps) => match &steps[0] {
+                Step::Sql(sql, params) => {
+                    assert!(sql.ends_with("WHERE id = ? AND rev < ?"));
+                    assert_eq!(*params, params![String::from("Hello"), 9u32, 4u32, 9u32]);
+                }
+                _ => panic!("expected a statement"),
+            },
             _ => panic!("expected a write"),
         }
     }
