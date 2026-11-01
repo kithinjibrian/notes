@@ -1,9 +1,10 @@
 [app]
 name = "Notes"
-version = "0.8.0"
+version = "0.9.0"
 description = "Notes, kept on this device"
 host = "notes.dafifi.net"
 module = "target/wasm32-unknown-unknown/release/notes.wasm"
+icon = "icon.svg"
 
 [assets]
 "search.svg" = "assets/search.svg"
